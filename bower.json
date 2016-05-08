@@ -5,6 +5,10 @@
   "moduleType": [
     "node"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Thimoteus/purescript-infinite-lists.git"
+  },
   "ignore": [
     "**/.*",
     "node_modules",
