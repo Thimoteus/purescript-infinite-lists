@@ -1,0 +1,22 @@
+{
+  "name": "purescript-infinite-lists",
+  "version": "1.0.0",
+  "license": "MIT",
+  "moduleType": [
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-lazy": "^0.4.1",
+    "purescript-maybe": "^0.3.5",
+    "purescript-tuples": "^0.4.0"
+  },
+  "devDependencies": {
+    "purescript-console": "^0.1.1"
+  }
+}
