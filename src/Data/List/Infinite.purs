@@ -79,6 +79,9 @@ insert = insertBy compare
 iterate :: forall a. (a -> a) -> a -> List a
 iterate f x = Z.fix \ xs -> cons x (f <$> xs)
 
+repeat :: forall a. a -> List a
+repeat = iterate id
+
 uncons :: forall a. List a -> { head :: a, tail :: List a }
 uncons xs = case step xs of
                  Cons x xs -> { head: x, tail: xs }
