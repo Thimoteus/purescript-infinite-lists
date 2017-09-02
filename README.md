@@ -7,6 +7,10 @@ This library defines a type for strictly infinite (but lazy) lists.
 As such, some of the `Data.List` API is not implemented here -- anything that
 relies on finiteness, for example -- while other functions get simplified types.
 
+Also note that equality of countable sets is undecidable in general, but inequality
+can be determined after a finite number of steps. As such using `eq` and `compare`
+may not terminate.
+
 For example:
 ```purescript
 head :: forall a. List a -> a
@@ -19,8 +23,8 @@ are now totally safe.
 `Data.List.Infinite` is meant to be imported qualified, as almost all its exposed
 functions clash with other modules.
 
-Note also that the `Semigroup` instance provided is not an extension of the
-finite version.
+Note also that the `Semigroup` instance provided is not extended by the finite
+version.
 
 # installing
 

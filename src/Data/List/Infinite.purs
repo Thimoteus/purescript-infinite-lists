@@ -3,7 +3,6 @@ module Data.List.Infinite where
 import Prelude
 
 import Control.Lazy as Z
-
 import Data.Lazy as L
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
@@ -24,24 +23,30 @@ instance lazyList :: Z.Lazy (List a) where
   defer f = List $ L.defer (step <<< f)
 
 instance functorList :: Functor List where
+  map :: forall a b. (a -> b) -> List a -> List b
   map f xs = List (go <$> runList xs)
     where
-      go (Cons x xs) = Cons (f x) (f <$> xs)
+      go (Cons y ys) = Cons (f y) (f <$> ys)
 
 instance semigroupList :: Semigroup (List a) where append = merge
 
 instance applyList :: Apply List where
+  apply :: forall a b. List (a -> b) -> List a -> List b
   apply fs as = List $ go <$> runList fs <*> runList as
     where
       go (Cons f ft) (Cons a at) = Cons (f a) (apply ft at)
 
-traverse :: forall a b f. Applicative f => (a -> f b) -> List a -> f (List b)
-traverse f xs = go $ step xs
-  where
-    go (Cons x xs) = cons <$> f x <*> traverse f xs
+instance applicativeList :: Applicative List where
+  pure :: forall a. a -> List a
+  pure = repeat
 
-sequence :: forall a f. Applicative f => List (f a) -> f (List a)
-sequence = traverse id
+-- traverse :: forall a b f. Applicative f => (a -> f b) -> List a -> f (List b)
+-- traverse f = go <<< step
+--   where
+--     go (Cons x xs) = cons <$> f x <*> traverse f xs
+--
+-- sequence :: forall a f. Applicative f => List (f a) -> f (List a)
+-- sequence = traverse id
 
 runList :: forall a. List a -> L.Lazy (Step a)
 runList (List xs) = xs
@@ -84,7 +89,7 @@ repeat = iterate id
 
 uncons :: forall a. List a -> { head :: a, tail :: List a }
 uncons xs = case step xs of
-                 Cons x xs -> { head: x, tail: xs }
+                 Cons y ys -> { head: y, tail: ys }
 
 head :: forall a. List a -> a
 head = _.head <<< uncons
@@ -107,13 +112,13 @@ deleteAt :: forall a. Int -> List a -> List a
 deleteAt n xs = List $ go n <$> runList xs
   where
     go 0 (Cons y ys) = step ys
-    go n (Cons y ys) = Cons y (deleteAt (n - 1) ys)
+    go m (Cons y ys) = Cons y (deleteAt (m - 1) ys)
 
 updateAt :: forall a. Int -> a -> List a -> List a
 updateAt n x xs = List $ go n <$> runList xs
   where
     go 0 (Cons _ ys) = Cons x ys
-    go n (Cons y ys) = Cons y $ updateAt (n - 1) x ys
+    go m (Cons y ys) = Cons y $ updateAt (m - 1) x ys
 
 alterAt :: forall a. Int -> (a -> Maybe a) -> List a -> List a
 alterAt n f xs = List $ go n <$> runList xs
@@ -121,7 +126,7 @@ alterAt n f xs = List $ go n <$> runList xs
     go 0 (Cons y ys) = case f y of
                             Just y' -> Cons y' ys
                             _ -> step ys
-    go n (Cons y ys) = Cons y (alterAt (n - 1) f ys)
+    go m (Cons y ys) = Cons y (alterAt (m - 1) f ys)
 
 modifyAt :: forall a. Int -> (a -> a) -> List a -> List a
 modifyAt n f = alterAt n (Just <<< f)
@@ -134,14 +139,14 @@ merge xs ys = List $ go <$> runList xs <*> runList ys
 drop :: forall a. Int -> List a -> List a
 drop n xs = List $ go n <$> runList xs
   where
-    go 0 xs = xs
-    go n (Cons x xs) = go (n - 1) (step xs)
+    go 0 ys = ys
+    go m (Cons y ys) = go (m - 1) (step ys)
 
 dropWhile :: forall a. (a -> Boolean) -> List a -> List a
 dropWhile p xs = go (step xs)
   where
-    go (Cons x xs) | p x = go (step xs)
-    go xs = fromStep xs
+    go (Cons y ys) | p y = go (step ys)
+    go ys = fromStep ys
 
 deleteBy :: forall a. (a -> a -> Boolean) -> a -> List a -> List a
 deleteBy p x xs = List $ go <$> runList xs
