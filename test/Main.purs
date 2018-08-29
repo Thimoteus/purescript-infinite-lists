@@ -2,9 +2,10 @@ module Test.Main where
 
 import Prelude
 
+import Data.List.Infinite (List, delete, deleteAt, drop, dropWhile, head, insert, iterate, merge, repeat, unfold, (!!))
+import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Console (logShow)
-import Data.List.Infinite (List, delete, deleteAt, drop, dropWhile, head, insert, iterate, merge, repeat, (!!))
 
 nats :: List Int
 nats = iterate (add 1) 0
@@ -42,6 +43,9 @@ test7 = head $ head $ nats2
 test8 :: Int
 test8 = head $ head $ nats3
 
+test9 :: Int
+test9 = unfold 0 (\n -> Tuple n (n+1)) !! 100
+
 main :: Effect Unit
 main = do
   logShow test1
@@ -52,3 +56,4 @@ main = do
   logShow test6
   logShow test7
   logShow test8
+  logShow test9

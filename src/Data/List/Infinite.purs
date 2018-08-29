@@ -22,7 +22,7 @@ derive instance eqList :: Eq a => Eq (List a)
 derive instance ordList :: Ord a => Ord (List a)
 
 instance lazyList :: Z.Lazy (List a) where
-  defer f = List $ L.defer (step <<< f)
+  defer f = List $ L.defer \_ -> step $ f unit
 
 instance functorList :: Functor List where
   map :: forall a b. (a -> b) -> List a -> List b
@@ -178,3 +178,11 @@ zipWith f xs ys = List $ go <$> runList xs <*> runList ys
 
 zip :: forall a b. List a -> List b -> List (Tuple a b)
 zip = zipWith Tuple
+
+unfold :: ∀ s a. s -> (s -> Tuple a s) -> List a
+unfold init next =
+  List $ L.defer \_ ->
+    let
+      Tuple val state = next init
+    in
+      Cons val (unfold state next)
