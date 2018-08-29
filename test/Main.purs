@@ -2,10 +2,9 @@ module Test.Main where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, logShow)
-import Data.List.Infinite (List, delete, deleteAt, drop, dropWhile, head, insert, iterate, merge, repeat, (!!), foldr)
-import Data.Lazy as L
+import Effect (Effect)
+import Effect.Console (logShow)
+import Data.List.Infinite (List, delete, deleteAt, drop, dropWhile, head, insert, iterate, merge, repeat, (!!))
 
 nats :: List Int
 nats = iterate (add 1) 0
@@ -43,10 +42,7 @@ test7 = head $ head $ nats2
 test8 :: Int
 test8 = head $ head $ nats3
 
-test9 :: Boolean
-test9 = L.force $ foldr conj (L.defer \_ -> false) (repeat (L.defer \_ -> false))
-
-main :: forall e. Eff (console :: CONSOLE | e) Unit
+main :: Effect Unit
 main = do
   logShow test1
   logShow test2

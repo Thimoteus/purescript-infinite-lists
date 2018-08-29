@@ -16,12 +16,12 @@
     "output"
   ],
   "dependencies": {
-    "purescript-lazy": "^3.0.0",
-    "purescript-maybe": "^3.0.0",
-    "purescript-tuples": "^4.1.0"
+    "purescript-lazy": "^4.0.0",
+    "purescript-maybe": "^4.0.0",
+    "purescript-tuples": "^5.0.0"
   },
   "devDependencies": {
-    "purescript-console": "^3.0.0",
-    "purescript-psci-support": "^3.0.0"
+    "purescript-console": "^4.1.0",
+    "purescript-psci-support": "^4.0.0"
   }
 }

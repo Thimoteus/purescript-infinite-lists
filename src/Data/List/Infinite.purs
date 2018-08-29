@@ -46,7 +46,7 @@ instance applicativeList :: Applicative List where
 --     go (Cons x xs) = cons <$> f x <*> traverse f xs
 --
 -- sequence :: forall a f. Applicative f => List (f a) -> f (List a)
--- sequence = traverse id
+-- sequence = traverse identity
 
 runList :: forall a. List a -> L.Lazy (Step a)
 runList (List xs) = xs
@@ -85,7 +85,7 @@ iterate :: forall a. (a -> a) -> a -> List a
 iterate f x = Z.fix \ xs -> cons x (f <$> xs)
 
 repeat :: forall a. a -> List a
-repeat = iterate id
+repeat = iterate identity
 
 uncons :: forall a. List a -> { head :: a, tail :: List a }
 uncons xs = case step xs of
