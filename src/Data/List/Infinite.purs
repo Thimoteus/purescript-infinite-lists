@@ -2,6 +2,8 @@ module Data.List.Infinite where
 
 import Prelude
 
+import Control.Comonad (class Comonad)
+import Control.Extend (class Extend)
 import Control.Lazy as Z
 import Data.Lazy as L
 import Data.Maybe (Maybe(..))
@@ -39,6 +41,18 @@ instance applyList :: Apply List where
 instance applicativeList :: Applicative List where
   pure :: forall a. a -> List a
   pure = repeat
+
+instance extendList :: Extend List where
+  extend :: ∀ a b. (List a -> b) -> List a -> List b
+  extend f = map f <<< duplicate
+
+instance comonadList :: Comonad List where
+  extract :: ∀ a. List a -> a
+  extract = head
+
+duplicate :: ∀ a. List a -> List (List a)
+duplicate xs = case step xs of
+  Cons _ ys -> List $ L.defer \_ -> Cons xs (duplicate ys)
 
 -- traverse :: forall a b f. Applicative f => (a -> f b) -> List a -> f (List b)
 -- traverse f = go <<< step
