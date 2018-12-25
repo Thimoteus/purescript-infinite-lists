@@ -7,6 +7,7 @@ import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Console (logShow)
 
+
 nats :: List Int
 nats = iterate (add 1) 0
 
@@ -52,6 +53,13 @@ test10 = nats
     # head
     # eq 3
 
+-- Check that max call stack is not exceeded by large lists
+test11 :: Boolean
+test11 = nats
+    # filter (eq 10000)
+    # head
+    # eq 10000
+
 main :: Effect Unit
 main = do
   logShow test1
@@ -64,3 +72,4 @@ main = do
   logShow test8
   logShow test9
   logShow test10
+  logShow test11

@@ -112,9 +112,9 @@ tail :: forall a. List a -> List a
 tail = _.tail <<< uncons
 
 filter :: forall a. (a -> Boolean) -> List a -> List a
-filter p xs = List $ go <$> runList xs where
+filter p (List xs) = List $ go <$> xs where
   go (Cons y ys) | p y = Cons y $ filter p ys
-                 | otherwise = step $ filter p ys
+                 | otherwise = go $ step ys
 
 insertAt :: forall a. Int -> a -> List a -> List a
 insertAt 0 x xs = x : xs
