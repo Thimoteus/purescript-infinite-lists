@@ -2,10 +2,11 @@ module Test.Main where
 
 import Prelude
 
-import Data.List.Infinite (List, delete, deleteAt, drop, dropWhile, head, insert, iterate, merge, repeat, unfold, (!!))
+import Data.List.Infinite (List, delete, deleteAt, drop, dropWhile, filter, head, insert, iterate, merge, repeat, unfold, (!!))
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Console (logShow)
+
 
 nats :: List Int
 nats = iterate (add 1) 0
@@ -46,6 +47,19 @@ test8 = head $ head $ nats3
 test9 :: Int
 test9 = unfold 0 (\n -> Tuple n (n+1)) !! 100
 
+test10 :: Boolean
+test10 = nats
+    # filter (eq 3)
+    # head
+    # eq 3
+
+-- Check that max call stack is not exceeded by large lists
+test11 :: Boolean
+test11 = nats
+    # filter (eq 10000)
+    # head
+    # eq 10000
+
 main :: Effect Unit
 main = do
   logShow test1
@@ -57,3 +71,5 @@ main = do
   logShow test7
   logShow test8
   logShow test9
+  logShow test10
+  logShow test11
